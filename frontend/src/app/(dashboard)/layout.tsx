@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { RouteGuard } from "@/components/layout/RouteGuard";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
+import { SOSButton } from "@/components/layout/SOSButton";
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
             <ErrorBoundary>{children}</ErrorBoundary>
           </main>
         </div>
+        <SOSButton />
       </div>
     </RouteGuard>
   );

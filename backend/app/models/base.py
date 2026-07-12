@@ -1,9 +1,8 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import DateTime, Uuid, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Uuid
 
 
 class Base(DeclarativeBase):

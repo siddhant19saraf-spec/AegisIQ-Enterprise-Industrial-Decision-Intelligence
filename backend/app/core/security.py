@@ -31,6 +31,17 @@ def create_access_token(subject: str, role: str, expires_delta: int | None = Non
     return jwt.encode(payload, settings.secret_key, algorithm="HS256")
 
 
+def create_refresh_token(subject: str) -> str:
+    expire = datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
+    payload = {
+        "sub": subject,
+        "exp": expire,
+        "iat": datetime.now(UTC),
+        "type": "refresh",
+    }
+    return jwt.encode(payload, settings.secret_key, algorithm="HS256")
+
+
 def decode_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])

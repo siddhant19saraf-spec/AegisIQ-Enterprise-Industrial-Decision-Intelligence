@@ -11,7 +11,7 @@ class NotificationRepository(BaseRepository[Notification, None, None]):
     async def get_unread_count(self, user_id) -> int:
         result = await self.db.execute(
             select(func.count(Notification.id)).where(
-                Notification.user_id == user_id, Notification.read == False
+                Notification.user_id == user_id, Notification.read.is_(False)
             )
         )
         return result.scalar() or 0
@@ -25,7 +25,7 @@ class NotificationRepository(BaseRepository[Notification, None, None]):
     async def mark_all_read(self, user_id) -> None:
         await self.db.execute(
             update(Notification)
-            .where(Notification.user_id == user_id, Notification.read == False)
+            .where(Notification.user_id == user_id, Notification.read.is_(False))
             .values(read=True)
         )
         await self.db.flush()

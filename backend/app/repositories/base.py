@@ -1,7 +1,7 @@
 from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel
-from sqlalchemy import func, select, or_
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.base import Base as DBBase

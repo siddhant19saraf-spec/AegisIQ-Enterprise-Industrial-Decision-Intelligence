@@ -3,7 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.schemas.common import MessageResponse, PaginatedResponse, PaginationParams
-from app.schemas.incident import IncidentCreate, IncidentResponse, IncidentUpdate, IncidentUpdateCreate, IncidentUpdateResponse
+from app.schemas.incident import (
+    IncidentCreate,
+    IncidentResponse,
+    IncidentUpdate,
+    IncidentUpdateCreate,
+    IncidentUpdateResponse,
+)
 from app.services.incident_service import IncidentService
 
 router = APIRouter(prefix="/incidents", tags=["incidents"])

@@ -1,73 +1,114 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { Cpu, AlertTriangle, Activity, FileText, ArrowUpRight, ArrowDownRight } from "lucide-react";
+"use client";
 
-const kpis = [
-  { label: "Total Assets", value: "1,284", icon: Cpu, change: "+12 this month", trend: "up" },
-  { label: "Active Incidents", value: "14", icon: AlertTriangle, change: "-3 from yesterday", trend: "down" },
-  { label: "Uptime Rate", value: "98.7%", icon: Activity, change: "+0.2% this week", trend: "up" },
-  { label: "Open Reports", value: "8", icon: FileText, change: "2 due today", trend: "up" },
-];
+import { PageHeader } from "@/components/layout/PageHeader";
+import { LoadingState } from "@/components/layout/LoadingState";
+import { EmptyState } from "@/components/layout/EmptyState";
+import { KPICards } from "@/features/dashboard/components/KPICards";
+import { RiskCards } from "@/features/dashboard/components/RiskCards";
+import { useDashboardSummary } from "@/features/dashboard/hooks/useDashboard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Activity, ClipboardList, LayoutDashboard } from "lucide-react";
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+} from "recharts";
+
+const COLORS = ["#10b981", "#f59e0b", "#6b7280", "#ef4444"];
+const SEV_COLORS = ["#ef4444", "#f97316", "#f59e0b", "#3b82f6"];
 
 export default function DashboardPage() {
+  const { data, isLoading, error } = useDashboardSummary();
+
+  if (isLoading) return <LoadingState variant="page" />;
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Dashboard" description="Real-time overview of your industrial operations" />
+        <EmptyState
+          icon={<LayoutDashboard className="h-12 w-12" />}
+          title="Unable to load dashboard"
+          description="Check your connection or try again later."
+        />
+      </div>
+    );
+  }
+  if (!data) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Dashboard" description="Real-time overview of your industrial operations" />
+        <EmptyState
+          icon={<LayoutDashboard className="h-12 w-12" />}
+          title="No data yet"
+          description="Add assets and incidents to see your dashboard."
+        />
+      </div>
+    );
+  }
+
+  const assetPie = Object.entries(data.assets_by_status).map(([name, value]) => ({ name, value }));
+  const sevBar = Object.entries(data.incidents_by_severity).map(([name, value]) => ({ name, value }));
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
         description="Real-time overview of your industrial operations"
       />
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <Card key={kpi.label}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {kpi.label}
-                </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{kpi.value}</div>
-                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                  {kpi.trend === "up" ? (
-                    <ArrowUpRight className="h-3 w-3 text-emerald-500" />
-                  ) : (
-                    <ArrowDownRight className="h-3 w-3 text-red-500" />
-                  )}
-                  {kpi.change}
-                </p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
+      <KPICards data={data} />
+      <RiskCards
+        assetsByStatus={data.assets_by_status}
+        incidentsBySeverity={data.incidents_by_severity}
+      />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="lg:col-span-4">
-          <CardHeader>
-            <CardTitle className="text-base">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="h-64 flex items-center justify-center text-sm text-muted-foreground">
-            Activity feed will appear here once data is connected
-          </CardContent>
-        </Card>
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle className="text-base">Pending Actions</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Activity className="h-4 w-4" />
+              Asset Status Distribution
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {[
-              { action: "Review Incident #1042", due: "2 hours ago" },
-              { action: "Approve maintenance report", due: "Yesterday" },
-              { action: "Update asset Turbine #7", due: "2 days ago" },
-            ].map((item) => (
-              <div key={item.action} className="flex items-center justify-between rounded-md border p-3">
-                <span className="text-sm">{item.action}</span>
-                <span className="text-xs text-muted-foreground">{item.due}</span>
-              </div>
-            ))}
+          <CardContent>
+            {assetPie.length === 0 ? (
+              <p className="py-8 text-center text-sm text-muted-foreground">No assets</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={260}>
+                <PieChart>
+                  <Pie data={assetPie} cx="50%" cy="50%" innerRadius={60} outerRadius={100} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                    {assetPie.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+        <Card className="lg:col-span-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ClipboardList className="h-4 w-4" />
+              Incidents by Severity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {sevBar.length === 0 ? (
+              <p className="py-8 text-center text-sm text-muted-foreground">No incidents</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={sevBar}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="name" className="text-xs" />
+                  <YAxis className="text-xs" />
+                  <Tooltip />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {sevBar.map((_, i) => (
+                      <Cell key={i} fill={SEV_COLORS[i % SEV_COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
       </div>

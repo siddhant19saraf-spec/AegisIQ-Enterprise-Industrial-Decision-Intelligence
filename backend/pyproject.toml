@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "aegisiq"
+version = "0.1.0"
+description = "Enterprise Intelligence Platform"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

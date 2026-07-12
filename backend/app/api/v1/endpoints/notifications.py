@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 
 from app.schemas.common import MessageResponse, PaginatedResponse, PaginationParams
 from app.schemas.notification import NotificationCreate, NotificationResponse
@@ -33,13 +33,13 @@ async def get_unread_count(user_id: UUID, svc: NotificationService = Depends()):
     return {"count": count}
 
 
-@router.patch("/{notification_id}/read", response_model=MessageResponse)
-async def mark_read(notification_id: UUID, svc: NotificationService = Depends()):
-    await svc.mark_read(notification_id)
-    return MessageResponse(message="Marked as read")
-
-
 @router.patch("/read-all", response_model=MessageResponse)
 async def mark_all_read(user_id: UUID, svc: NotificationService = Depends()):
     await svc.mark_all_read(user_id)
     return MessageResponse(message="All marked as read")
+
+
+@router.patch("/{notification_id}/read", response_model=MessageResponse)
+async def mark_read(notification_id: UUID, svc: NotificationService = Depends()):
+    await svc.mark_read(notification_id)
+    return MessageResponse(message="Marked as read")

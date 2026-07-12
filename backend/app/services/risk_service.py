@@ -1,15 +1,13 @@
 from uuid import UUID
 
-from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
 from app.repositories.asset_repository import AssetRepository
 from app.repositories.incident_repository import IncidentRepository
 
 
 class RiskService:
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, db: AsyncSession):
         self.asset_repo = AssetRepository(db)
         self.incident_repo = IncidentRepository(db)
 

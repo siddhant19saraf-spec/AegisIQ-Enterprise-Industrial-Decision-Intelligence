@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from uuid import UUID
 
 from fastapi import Depends
@@ -6,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
 from app.repositories.asset_repository import AssetRepository
-from app.schemas.asset import AssetCreate, AssetUpdate, AssetResponse
+from app.schemas.asset import AssetCreate, AssetResponse, AssetUpdate
 from app.schemas.common import PaginatedResponse, PaginationParams
 
 

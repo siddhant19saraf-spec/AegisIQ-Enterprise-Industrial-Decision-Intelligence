@@ -4,7 +4,11 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
-from app.repositories.incident_repository import IncidentRepository, IncidentUpdateRepository
+from app.repositories.incident_repository import (
+    IncidentRepository,
+    IncidentUpdateRepository,
+)
+from app.schemas.common import PaginatedResponse, PaginationParams
 from app.schemas.incident import (
     IncidentCreate,
     IncidentResponse,
@@ -12,7 +16,6 @@ from app.schemas.incident import (
     IncidentUpdateCreate,
     IncidentUpdateResponse,
 )
-from app.schemas.common import PaginatedResponse, PaginationParams
 
 
 class IncidentService:

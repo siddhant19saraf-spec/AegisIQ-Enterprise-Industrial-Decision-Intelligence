@@ -1,4 +1,5 @@
-from sqlalchemy import JSON as SAJSON, TypeDecorator
+from sqlalchemy import JSON as SAJSON
+from sqlalchemy import TypeDecorator
 from sqlalchemy.dialects.postgresql import JSONB
 
 

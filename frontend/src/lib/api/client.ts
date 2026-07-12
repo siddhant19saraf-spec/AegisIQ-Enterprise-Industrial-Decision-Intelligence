@@ -10,6 +10,20 @@ export class ApiError extends Error {
   }
 }
 
+let authToken: string | null = null;
+
+export function setAuthToken(token: string | null) {
+  authToken = token;
+}
+
+function buildHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {};
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  }
+  return headers;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.text().catch(() => "Unknown error");
@@ -27,23 +41,25 @@ function buildUrl(path: string, params?: Record<string, string>) {
 }
 
 export const api = {
+  getBaseUrl: () => API_URL,
+  setAuthToken,
   get: <T>(path: string, params?: Record<string, string>) =>
-    fetch(buildUrl(path, params)).then((r) => handleResponse<T>(r)),
+    fetch(buildUrl(path, params), { headers: buildHeaders() }).then((r) => handleResponse<T>(r)),
 
   post: <T>(path: string, body?: unknown) =>
     fetch(buildUrl(path), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...buildHeaders() },
       body: body ? JSON.stringify(body) : undefined,
     }).then((r) => handleResponse<T>(r)),
 
   patch: <T>(path: string, body?: unknown) =>
     fetch(buildUrl(path), {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...buildHeaders() },
       body: body ? JSON.stringify(body) : undefined,
     }).then((r) => handleResponse<T>(r)),
 
   delete: <T>(path: string) =>
-    fetch(buildUrl(path), { method: "DELETE" }).then((r) => handleResponse<T>(r)),
+    fetch(buildUrl(path), { method: "DELETE", headers: buildHeaders() }).then((r) => handleResponse<T>(r)),
 };
