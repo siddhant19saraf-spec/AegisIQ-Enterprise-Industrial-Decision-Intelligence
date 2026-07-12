@@ -41,7 +41,9 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --upgrade -r requirements.txt
+      - name: Verify dependencies
+        run: python -c "import email_validator; print('email-validator OK'); from pydantic import EmailStr; print('EmailStr OK')"
       - name: Run tests
         run: python -m pytest -v
 
