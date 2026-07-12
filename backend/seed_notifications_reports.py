@@ -1,14 +1,12 @@
 """Seed notifications and reports data into the database."""
 import asyncio
-from datetime import datetime, timezone, timedelta
-from uuid import uuid4
+from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from app.core.database import async_session_factory
 from app.models.notification import Notification
 from app.models.report import Report
-
 
 NOTIFICATIONS = [
     {"type": "alert", "title": "Critical: Turbine #7 temperature exceeded 95°C", "body": "Temperature sensor on Turbine #7 in Mumbai Refinery detected 95°C — threshold breach. Immediate inspection required.", "data": {"category": "alerts", "priority": "high"}},

@@ -117,8 +117,8 @@ async def get_conversation(conversation_id: str) -> dict:
 @router.get("/suggestions")
 async def get_suggestions() -> list[str]:
     """Get suggested prompt ideas."""
-    from app.xai.engine import SUGGESTED_PROMPTS as sp
-    return sp
+    from app.xai.engine import SUGGESTED_PROMPTS
+    return SUGGESTED_PROMPTS
 
 
 @router.post("/suggestions")

@@ -1,10 +1,10 @@
-class AegisIQException(Exception):
+class AegisIQError(Exception):
     status_code: int = 500
     detail: str = "Internal server error"
     code: str = "internal_error"
 
 
-class NotFoundException(AegisIQException):
+class NotFoundError(AegisIQError):
     status_code = 404
     code = "not_found"
 
@@ -12,7 +12,7 @@ class NotFoundException(AegisIQException):
         self.detail = detail
 
 
-class UnauthorizedException(AegisIQException):
+class UnauthorizedError(AegisIQError):
     status_code = 401
     code = "unauthorized"
 
@@ -20,7 +20,7 @@ class UnauthorizedException(AegisIQException):
         self.detail = detail
 
 
-class ForbiddenException(AegisIQException):
+class ForbiddenError(AegisIQError):
     status_code = 403
     code = "forbidden"
 
@@ -28,7 +28,7 @@ class ForbiddenException(AegisIQException):
         self.detail = detail
 
 
-class ConflictException(AegisIQException):
+class ConflictError(AegisIQError):
     status_code = 409
     code = "conflict"
 
@@ -36,7 +36,7 @@ class ConflictException(AegisIQException):
         self.detail = detail
 
 
-class ValidationException(AegisIQException):
+class ValidationError(AegisIQError):
     status_code = 422
     code = "validation_error"
 

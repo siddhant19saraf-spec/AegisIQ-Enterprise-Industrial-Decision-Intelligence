@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
-from random import choice, randint, uniform
-from uuid import UUID, uuid4
+from random import choice, randint
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select

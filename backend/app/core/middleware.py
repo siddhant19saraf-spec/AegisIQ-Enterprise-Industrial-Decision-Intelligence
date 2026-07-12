@@ -7,7 +7,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from app.core.config import get_settings
-from app.core.exceptions import AegisIQException
+from app.core.exceptions import AegisIQError
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -37,8 +37,8 @@ def register_middleware(app: FastAPI) -> None:
 
 
 def register_exception_handlers(app: FastAPI) -> None:
-    @app.exception_handler(AegisIQException)
-    async def aegisiq_exception_handler(request: Request, exc: AegisIQException):
+    @app.exception_handler(AegisIQError)
+    async def aegisiq_exception_handler(request: Request, exc: AegisIQError):
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail, "code": exc.code},
