@@ -12,6 +12,7 @@ alembic==1.13.2
 # Auth (minimal — expanded later)
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
+email-validator>=2.1.0
 
 # Integrations
 redis>=5.1.0
